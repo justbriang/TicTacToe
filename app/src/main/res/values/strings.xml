@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">TicTacToe</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="login_title">Commute stylishly></string>
+    <string name="username">UserName</string>
+    <string name="email_address">Email Address</string>
+    <string name="password">Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="sign_up">Sign up</string>
+    <string name="logo">LOGO</string>
+    <string name="access_token">access_token</string>
+    <string name="emailpref">emailpref</string>
+    <string name="passpref">emailpref</string>
+    <string name="remember_me">Remember me</string>
+    <string name="show_who_s_boss">Show who\'s Boss</string>
+
+</resources>
