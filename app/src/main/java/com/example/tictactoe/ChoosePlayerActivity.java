@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -15,14 +16,18 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.tictactoe.Adapter.UserAdapter;
+import com.example.tictactoe.Adapter.RecyclerItemClickListener;
+
 import com.example.tictactoe.model.Game;
 import com.example.tictactoe.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,13 +60,22 @@ public class ChoosePlayerActivity extends AppCompatActivity {
     private String userEmail, username;
     public static final String SHARED_PREF = "sharedPrefs";
     private UserAdapter adapter;
-    RecyclerView.LayoutManager
-
+    RecyclerView.LayoutManager layoutManager;
+    RecyclerView recyclerView;
+    ArrayList<User> arrayOfUsers =new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_choose_player);
+
+
+        recyclerView = (RecyclerView) findViewById(R.id.myListView);
+        layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        recyclerView.setHasFixedSize(true);
+
         SharedPreferences mPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE);
 
         userID = mPreferences.getString(userid, "userid not set");
@@ -72,33 +86,36 @@ public class ChoosePlayerActivity extends AppCompatActivity {
         inviteButton = (Button) findViewById(R.id.inviteBtn);
         etInviteEMail.setText(userID);
 
-
+        adapter = new UserAdapter(this, arrayOfUsers);
+        recyclerView.setAdapter(adapter);
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("using_App", true);
 
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+       arrayOfUsers.clear();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        ArrayList<User> arrayOfUsers = new ArrayList<User>();
-        adapter = new UserAdapter(this, arrayOfUsers);
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(ChoosePlayerActivity.this,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
 
-        final ListView listView = (ListView) findViewById(R.id.myListView);
-        listView.setAdapter(adapter);
+                                currentOpponent = arrayOfUsers.get(position);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, final View view, int position, long id) {
-                currentOpponent = (User) listView.getAdapter().getItem(position);
-                etInviteEMail.setText(currentOpponent.email);
-            }
-        });
+                                etInviteEMail.setText(currentOpponent.email);
+                            }
+                        }));
+
+
+
 
         mFirebaseInstance = FirebaseDatabase.getInstance();
 
@@ -132,7 +149,8 @@ public class ChoosePlayerActivity extends AppCompatActivity {
                 // current request,and they are still using the app then they are a valid opponent to choose
                 else if (!user.currentlyPlaying && user.opponentID.isEmpty()) {
 
-                    adapter.add(user);
+                    arrayOfUsers.add(user);
+                    adapter.notifyDataSetChanged();
                 }
             }
 
@@ -142,7 +160,7 @@ public class ChoosePlayerActivity extends AppCompatActivity {
 
                 // get the current user from the database
 
-                adapter.remove(user);
+                arrayOfUsers.remove(user);
                 adapter.notifyDataSetChanged();
 
             }
@@ -168,7 +186,7 @@ public class ChoosePlayerActivity extends AppCompatActivity {
                 // get the current user from the database
                 if (!currentUserLoggedIn.getEmail().equals(user.email)) {
                     if (user.currentlyPlaying || !user.opponentID.isEmpty()) {
-                        adapter.remove(user);
+                        arrayOfUsers.remove(user);
                         adapter.notifyDataSetChanged();
                     }
                 } else {
@@ -203,7 +221,10 @@ public class ChoosePlayerActivity extends AppCompatActivity {
                     }
                 }
             }
+
         });
+        adapter = new UserAdapter(this, arrayOfUsers);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override
@@ -214,44 +235,43 @@ public class ChoosePlayerActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-        mFirebaseDatabase = mFirebaseInstance.getReference("users").child("usingApp");
+//        mFirebaseDatabase = mFirebaseInstance.getReference("users").child("usingApp");
+//
+//
+//        notUsingApp.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(final DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//
+//
+//                    mFirebaseDatabase.child(dataSnapshot.getKey()).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
+//
+//                        @Override
+//                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
+//                            if (databaseError != null) {
+//                                System.out.println("Copy failed");
+//                            } else {
+//                                System.out.println("Success");
+//                                notUsingApp.child(userID).setValue(null);
+//                            }
+//                        }
+//                    });
+//
+//
+//                }
+//
+//            }
+//
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                System.out.println("The read failed: " + databaseError.getCode());
+//            }
+//        });
 
 
-
-            notUsingApp.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(final DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-
-                            mFirebaseDatabase.child(dataSnapshot.getKey()).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-
-                                @Override
-                                public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                                    if (databaseError != null) {
-                                        System.out.println("Copy failed");
-                                    } else {
-                                        System.out.println("Success");
-                                        notUsingApp.child(userID).setValue(null);
-                                    }
-                                }
-                            });
-
-
-                    }
-
-                }
-
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    System.out.println("The read failed: " + databaseError.getCode());
-                }
-            });
-
-
-        }
+    }
 
 
 //    @Override

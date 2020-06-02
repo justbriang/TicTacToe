@@ -46,7 +46,7 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseInstance;
 
     User loggedInUser;
-    private String userId;
+//    private String userId;
 
     TextView playerText, turn;
 
@@ -184,49 +184,13 @@ public class GameActivity extends AppCompatActivity {
 
         // get reference to 'users' node
         mFirebaseDatabase = mFirebaseInstance.getReference("users").child("usingApp");
-        resume();
+
         final FirebaseUser currentUserLoggedIn = FirebaseAuth.getInstance().getCurrentUser();
 
-        userId = currentUserLoggedIn.getUid();
-
-    }
-
-    protected void resume() {
-
-        mFirebaseDatabase = mFirebaseInstance.getReference("users").child("usingApp");
-        notUsingApp = mFirebaseInstance.getReference("users").child("notUsingApp");
-        notUsingApp = FirebaseDatabase.getInstance().getReference();
-        notUsingApp.child(userID).addValueEventListener(new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-
-
-                mFirebaseDatabase.child(dataSnapshot.getKey()).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-
-                    @Override
-                    public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-                        if (databaseError != null) {
-                            System.out.println("Copy failed");
-                        } else {
-                            System.out.println("Success");
-                            notUsingApp.child(userID).setValue(null);
-                        }
-                    }
-        });
-            }
-        }
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            // Code
-        }
-    });
-
-
-
 
 
     }
+
 
     @Override
     protected void onStart() {
@@ -235,95 +199,26 @@ public class GameActivity extends AppCompatActivity {
         super.onStart();
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        mFirebaseDatabase = mFirebaseInstance.getReference("users").child("usingApp");
-//
-//
-//
-//        notUsingApp.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-//
-//            @Override
-//            public void onDataChange(final DataSnapshot dataSnapshot) {
-//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-//
-//
-//                    mFirebaseDatabase.child(dataSnapshot.getKey()).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-//
-//                        @Override
-//                        public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-//                            if (databaseError != null) {
-//                                System.out.println("Copy failed");
-//                            } else {
-//                                System.out.println("Success");
-//                                notUsingApp.child(userID).setValue(null);
-//                            }
-//                        }
-//                    });
-//
-//
-//                }
-//
-//            }
-//
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });
-//
-//
-//    }
+    @Override
+    protected void onPause() {
 
+        super.onPause();
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
+
     }
 
-//    @Override
-//    protected void onPause() {
-//
-//
-//
-//        mFirebaseDatabase.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(final DataSnapshot dataSnapshot) {
-//                mFirebaseDatabase.child(dataSnapshot.getKey()).setValue(dataSnapshot.getValue(), new DatabaseReference.CompletionListener() {
-//                            @Override
-//                            public void onComplete(@Nullable DatabaseError databaseError, @NonNull DatabaseReference databaseReference) {
-//                                if (databaseError != null) {
-//                                    System.out.println("Copy failed");
-//                                } else {
-//                                    System.out.println("Success");
-//
-//
-//                                }
-//                            }
-//                        }
-//                );
-//
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                System.out.println("The read failed: " + databaseError.getCode());
-//            }
-//        });
-//
-//
-//        super.onPause();
-//
-//    }
+
 
     /**
      * User data change listener
      */
     private void addUserChangeListener() {
         // User data change listener
-        mFirebaseDatabase.child(userId).addValueEventListener(new ValueEventListener() {
+        mFirebaseDatabase.child(userID).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (dataSnapshot.exists()) {
