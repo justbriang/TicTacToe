@@ -15,4 +15,14 @@
     <string name="remember_me">Remember me</string>
     <string name="show_who_s_boss">Show who\'s Boss</string>
 
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="login">login</string>
+    <string name="log_in">Log in</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="register">Register</string>
+    <string name="challenge">Challenge</string>
+    <string name="name">Name</string>
+
+    <string name="user_id">User ID</string>
+
 </resources>

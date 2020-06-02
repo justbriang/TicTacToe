@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg4"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
 
+    tools:context=".MainActivity">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <ImageView
         android:layout_width="100dp"
@@ -28,7 +31,7 @@
         android:textSize="45sp" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/email_layout"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
@@ -53,6 +56,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/email_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:errorEnabled="true">
@@ -60,6 +64,8 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/regEmailEdit"
             android:layout_width="match_parent"
+
+
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="20dp"
@@ -79,6 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:errorEnabled="true"
+
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -104,6 +111,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:errorEnabled="true"
+
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
@@ -152,7 +160,7 @@
         android:fontFamily="@font/lato_lightitalic"
         android:onClick="signup"
         android:padding="10dp"
-        android:text="Register"
+        android:text="@string/register"
 
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
@@ -167,7 +175,7 @@
 
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Already have an account?"
+            android:text="@string/already_have_an_account"
             android:textColor="@color/colorPrimary" />
 
         <Button
@@ -176,8 +184,9 @@
             android:layout_height="wrap_content"
 
             android:onClick="launchLogin"
-            android:text="login"
+            android:text="@string/login"
             android:textColor="@color/colorPrimaryDark" />
     </LinearLayout>
 </LinearLayout>
 
+</ScrollView>

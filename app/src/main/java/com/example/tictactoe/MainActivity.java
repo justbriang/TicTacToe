@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.PersistableBundle;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private DatabaseReference mFirebaseDatabase;
     private FirebaseDatabase mFirebaseDatabaseInstance;
-    private TextInputLayout passConfirm, passinit, emailLay;
+    private TextInputLayout passConfirmLay, passLay, emailLay;
     private TextView Errordisp;
     private String userId;
     private String emaildb, email,password,confirmpassword,username;
@@ -45,31 +45,33 @@ private View view;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getSupportActionBar().hide();
+        //edit texts
         emailEdit = findViewById(R.id.regEmailEdit);
         usernameEdit = findViewById(R.id.regUsernameEdit);
         passwordEdit = findViewById(R.id.regPasswordEdit);
         passwordConfirmEdit = findViewById(R.id.confirmPassword);
-        progressBar = findViewById(R.id.loading_spinner);
-        //check for password mismatch
-        passConfirm = findViewById(R.id.confirmLayout);
-        passinit = findViewById(R.id.intiPass);
-        //check for email validity
-        emailLay = findViewById(R.id.email_layout);
-        //error display on failure
-        Errordisp = findViewById(R.id.errorDisp);
-        if (savedInstanceState != null) {
-            email=savedInstanceState.getString("savedEmail");
-            emailEdit.setText(email);
-            username=savedInstanceState.getString("savedEmail");
-            usernameEdit.setText(username);
-            password=savedInstanceState.getString("savedEmail");
-            passwordEdit.setText(password);
-            confirmpassword=savedInstanceState.getString("savedEmail");
-            passwordConfirmEdit.setText(confirmpassword);
-        }
 
+        //progressbar
+        progressBar = findViewById(R.id.loading_spinner);
+
+        //check for password mismatch
+        passConfirmLay = findViewById(R.id.confirmLayout);
+        passLay = findViewById(R.id.intiPass);
+
+        // email validity error display
+        emailLay = findViewById(R.id.email_layout);
+
+        //error display on signupfailure
+        Errordisp = findViewById(R.id.errorDisp);
+
+
+
+        //initializing firebase auth and databas instance
         mAuth = FirebaseAuth.getInstance();
         mFirebaseDatabaseInstance = FirebaseDatabase.getInstance();
+
+        //checking the login status
         if (mAuth.getCurrentUser() != null) {
             Intent i = new Intent(this, ChoosePlayerActivity.class);
             startActivity(i);
@@ -79,39 +81,7 @@ private View view;
 
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString("savedEmail",emailEdit.getText().toString());
-        outState.putString("savedUsername",usernameEdit.getText().toString());
-        outState.putString("savedPass",passwordEdit.getText().toString());
-        outState.putString("savedPassCon",passwordConfirmEdit.getText().toString());
-    }
 
-    @Override
-    protected void onStart() {
-        email=emailEdit.getText().toString();
-        password=passwordEdit.getText().toString();
-        confirmpassword=passwordConfirmEdit.getText().toString();
-        username=usernameEdit.getText().toString();
-        super.onStart();
-
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        email=emailEdit.getText().toString();
-        password=passwordEdit.getText().toString();
-        confirmpassword=passwordConfirmEdit.getText().toString();
-        username=usernameEdit.getText().toString();
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
 
     public void signup(View view) {
         email=emailEdit.getText().toString();
@@ -119,18 +89,25 @@ private View view;
         confirmpassword=passwordConfirmEdit.getText().toString();
         username=usernameEdit.getText().toString();
         Log.e("Register " ,email);
-        if (!password.equals(confirmpassword)) {
-            passConfirm.setError("Passwords do not match");
-            passinit.setError("Passwords do not match");
+        boolean checker=true;
 
+        //checking the password and email for validity
+        if (!password.equals(confirmpassword)) {
+            passConfirmLay.setError("Passwords do not match");
+            passLay.setError("Passwords do not match");
+                    checker=false;
         }
         if (password.length() < 8 && !isValidPassword(confirmpassword)) {
-            passinit.setError("Passwords is too weak");
+            passLay.setError("Passwords is too weak");
+            checker=false;
         }
         if (!isValidEmail(email)) {
             emailLay.setError("Invalid email");
+            checker=false;
         }
-        progressBar.setVisibility(View.VISIBLE);
+
+        if(checker){
+            progressBar.setVisibility(View.VISIBLE);
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(MainActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -147,6 +124,7 @@ private View view;
 
                             userId = user.getUid();
                             emaildb= user.getEmail();
+                            //storing shared preferences
                             SharedPreferences mPreferences =getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
                             SharedPreferences.Editor preferencesEditor = mPreferences.edit();
                             preferencesEditor.putString(userid, userId);
@@ -163,6 +141,7 @@ private View view;
                         }
                     }
                 });
+        }
 
     }
 
@@ -187,4 +166,11 @@ private View view;
 
         startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
+
+//    public void clear(View view) {
+//        Errordisp.setText("");
+//        emailLay.setError(null);
+//        passLay.setError("");
+//        passConfirmLay.setError("");
+//    }
 }

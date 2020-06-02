@@ -1,7 +1,6 @@
 package com.example.tictactoe;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -46,7 +45,7 @@ public class GameActivity extends AppCompatActivity {
     private FirebaseDatabase mFirebaseInstance;
 
     User loggedInUser;
-//    private String userId;
+
 
     TextView playerText, turn;
 
@@ -786,28 +785,28 @@ public class GameActivity extends AppCompatActivity {
         GameButton9.setX(x);
         GameButton9.setY(y);
     }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.logout:
-                Toast.makeText(this, "Clicked Logoff", Toast.LENGTH_SHORT).show();
-                FirebaseAuth.getInstance().signOut();
-
-                startActivity(new Intent(GameActivity.this, MainActivity.class));
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+//
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        MenuInflater inflater = getMenuInflater();
+//        inflater.inflate(R.menu.menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle item selection
+//        switch (item.getItemId()) {
+//            case R.id.logout:
+//                Toast.makeText(this, "Clicked Logoff", Toast.LENGTH_SHORT).show();
+//                FirebaseAuth.getInstance().signOut();
+//
+//                startActivity(new Intent(GameActivity.this, MainActivity.class));
+//                finish();
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
+//        }
+//    }
 
 }

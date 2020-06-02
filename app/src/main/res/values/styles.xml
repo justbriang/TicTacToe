@@ -16,9 +16,5 @@
         <item name="colorControlActivated">#FFFFFF</item>
         <item name="colorControlHighlight">#FFFFFF</item>
     </style>
-    <style name="Myswitch" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorControlNormal">#ffffff</item>   <!-- normal border color change as you wish -->
-        <item name="colorControlActivated">#ffffff</item> <!-- activated color change as you wish -->
-        <item name="android:textColor">#FFF</item> <!-- checkbox text color -->
-    </style>
+
 </resources>
